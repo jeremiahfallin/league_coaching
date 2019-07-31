@@ -55,18 +55,23 @@ function AddMatch() {
     );
     const body = await response.json();
     const data = body["data"];
-    const participants = data["participants"];
-    console.log(data);
+    const {
+      kills,
+      deaths,
+      assists,
+      totalDamageDealtToChampions: damage,
+      goldEarned: gold
+    } = data["participants"][0]["stats"];
     // 3102504145
 
     setBlueTop({
       summonerName: "",
-      champion: participants[0]["champion"],
-      kills: Number(participants[0]["stats"]["kills"]),
-      deaths: Number(participants[0]["stats"]["deaths"]),
-      assists: Number(participants[0]["stats"]["assists"]),
-      damage: Number(participants[0]["stats"]["totalDamageDealtToChampions"]),
-      gold: Number(participants[0]["stats"]["goldEarned"])
+      champion: data["participants"][0]["champion"],
+      kills: Number(kills),
+      deaths: Number(deaths),
+      assists: Number(assists),
+      damage: Number(damage),
+      gold: Number(gold)
     });
 
     console.log(blueTop);
