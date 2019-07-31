@@ -52,6 +52,10 @@ function AddMatch() {
     const response = await fetch(
       `http://localhost:4444/addmatch?match=${match}`
     );
+    if (response.status !== 200) {
+      throw Error(body.message);
+    }
+
     const body = await response.json();
     const data = body["data"];
     const {
@@ -74,18 +78,6 @@ function AddMatch() {
     });
 
     console.log(blueTop);
-
-    if (response.status !== 200) {
-      throw Error(body.message);
-    }
-  };
-
-  const handleBlueTopChange = e => {
-    const { name, value } = e.target;
-    let top = blueTop;
-    top[name] = value;
-    setBlueTop({ top });
-    ``;
   };
 
   const getMatch = () => {
