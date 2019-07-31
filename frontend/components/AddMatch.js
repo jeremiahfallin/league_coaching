@@ -3,6 +3,7 @@ import Form from "./styles/Form";
 import Router from "next/router";
 import Error from "./ErrorMessage";
 import styled from "styled-components";
+import PlayerInfo from "./PlayerInfo";
 
 const Division = styled.div`
   float: ${props => props.direction};
@@ -47,8 +48,6 @@ function AddMatch() {
     gold: 0
   });
 
-  const widthKDA = 10;
-
   const callBackendAPI = async match => {
     const response = await fetch(
       `http://localhost:4444/addmatch?match=${match}`
@@ -86,6 +85,7 @@ function AddMatch() {
     let top = blueTop;
     top[name] = value;
     setBlueTop({ top });
+    ``;
   };
 
   const getMatch = () => {
@@ -123,113 +123,7 @@ function AddMatch() {
           Blue Side
           <fieldset player="true">
             <legend>Top</legend>
-            <Column>
-              <Box>
-                <label htmlFor="summonerName">
-                  Summoner Name
-                  <input
-                    type="text"
-                    id="summonerName"
-                    name="summonerName"
-                    placeholder="Summoner Name"
-                    required
-                    onChange={e => handleBlueTopChange(e)}
-                  />
-                </label>
-              </Box>
-              <Box>
-                <label htmlFor="champion">
-                  Champion
-                  <input
-                    type="text"
-                    id="champion"
-                    name="champion"
-                    placeholder="Champion"
-                    required
-                    value={blueTop.champion}
-                    onChange={e => handleBlueTopChange(e)}
-                  />
-                </label>
-              </Box>
-
-              <Row>
-                <Box>
-                  <label htmlFor="kills">
-                    K
-                    <input
-                      type="number"
-                      id="kills"
-                      name="kills"
-                      placeholder="Kills"
-                      size={widthKDA}
-                      required
-                      value={blueTop.kills}
-                      onChange={e => handleBlueTopChange(e)}
-                    />
-                  </label>
-                </Box>
-                <Box>
-                  <label htmlFor="deaths">
-                    D
-                    <input
-                      type="number"
-                      id="deaths"
-                      name="deaths"
-                      placeholder="Deaths"
-                      size={widthKDA}
-                      required
-                      value={blueTop.deaths}
-                      onChange={e => handleBlueTopChange(e)}
-                    />
-                  </label>
-                </Box>
-                <Box>
-                  <label htmlFor="assists">
-                    A
-                    <input
-                      type="number"
-                      id="assists"
-                      name="assists"
-                      placeholder="Assists"
-                      size={widthKDA}
-                      required
-                      value={blueTop.assists}
-                      onChange={e => handleBlueTopChange(e)}
-                    />
-                  </label>
-                </Box>
-              </Row>
-              <Row>
-                <Box>
-                  <label htmlFor="damage">
-                    Damage
-                    <input
-                      type="number"
-                      id="damage"
-                      name="damage"
-                      placeholder="Damage"
-                      required
-                      value={blueTop.damage}
-                      onChange={e => handleBlueTopChange(e)}
-                    />
-                  </label>
-                </Box>
-                <Box>
-                  <label htmlFor="gold">
-                    Gold
-                    <input
-                      type="number"
-                      id="gold"
-                      name="gold"
-                      placeholder="Gold"
-                      required
-                      value={blueTop.gold}
-                      onChange={e => handleBlueTopChange(e)}
-                    />
-                  </label>
-                </Box>
-              </Row>
-            </Column>
+            <PlayerInfo playerData={blueTop} setPlayerData={setBlueTop} />
           </fieldset>
           <button type="submit">Submit</button>
         </Division>
