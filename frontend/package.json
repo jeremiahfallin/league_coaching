@@ -1,0 +1,39 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "apollo-boost": "^0.4.3",
+    "apollo-client": "^2.6.3",
+    "graphql": "^14.4.2",
+    "graphql-tag": "^2.10.1",
+    "lodash.debounce": "^4.0.8",
+    "next": "^9.0.2",
+    "next-with-apollo": "^4.1.1",
+    "react": "^16.8.6",
+    "react-apollo": "^2.5.8",
+    "react-dom": "^16.8.6",
+    "styled-components": "^4.3.2"
+  },
+  "scripts": {
+    "dev": "next -p 7777",
+    "build": "next build",
+    "start": "next start -p $PORT",
+    "heroku-postbuild": "next build"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

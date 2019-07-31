@@ -1,0 +1,66 @@
+# import * from './generated/prisma.graphql'
+
+type SuccessMessage {
+  message: String
+}
+
+type Mutation {
+  createMember(
+    firstName: String!
+    lastName: String!
+    middleName: String
+    birthDate: DateTime
+    streetAddress: String
+    city: String
+    state: String
+    zip: String
+    landPhone: String
+    cellPhone: String
+    email: String
+  ): Member!
+  updateMember(
+    id: ID!
+    firstName: String
+    lastName: String
+    middleName: String
+    birthDate: DateTime
+    streetAddress: String
+    city: String
+    state: String
+    zip: String
+    landPhone: String
+    cellPhone: String
+    email: String
+  ): Member!
+  deleteMember(id: ID!): Member
+  signup(email: String!, password: String!): User!
+  signin(email: String!, password: String!): User!
+  signout: SuccessMessage
+}
+
+type Query {
+  members(
+    where: MemberWhereInput
+    orderBy: MemberOrderByInput
+    skip: Int
+    first: Int
+  ): [Member]!
+  member(where: MemberWhereUniqueInput!): Member
+  membersConnection(where: MemberWhereInput): MemberConnection!
+  me: User
+}
+
+type Member {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  middleName: String
+  birthDate: DateTime
+  streetAddress: String
+  city: String
+  state: String
+  zip: String
+  landPhone: String
+  cellPhone: String
+  email: String
+}
