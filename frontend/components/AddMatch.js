@@ -10,19 +10,9 @@ const Division = styled.div`
   width: 45%;
 `;
 
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
 const Column = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const Box = styled.div`
-  flex: 1;
-  margin: 4px;
 `;
 
 const GetMatchButton = styled.button`
@@ -36,9 +26,7 @@ const GetMatchButton = styled.button`
 `;
 
 function AddMatch() {
-  const [loading, setLoading] = useState(false);
-  const [matchID, setMatchID] = useState(0);
-  const [blueTop, setBlueTop] = useState({
+  const baseStats = {
     summonerName: "",
     champion: "",
     kills: 0,
@@ -46,7 +34,20 @@ function AddMatch() {
     assists: 0,
     damage: 0,
     gold: 0
-  });
+  };
+
+  const [loading, setLoading] = useState(false);
+  const [matchID, setMatchID] = useState(0);
+  const [blueTop, setBlueTop] = useState(baseStats);
+  const [blueJungle, setBlueJungle] = useState(baseStats);
+  const [blueMid, setBlueMid] = useState(baseStats);
+  const [blueCarry, setBlueCarry] = useState(baseStats);
+  const [blueSupport, setBlueSupport] = useState(baseStats);
+  const [redTop, setRedTop] = useState(baseStats);
+  const [redJungle, setRedJungle] = useState(baseStats);
+  const [redMid, setRedMid] = useState(baseStats);
+  const [redCarry, setRedCarry] = useState(baseStats);
+  const [redSupport, setRedSupport] = useState(baseStats);
 
   const callBackendAPI = async match => {
     const response = await fetch(
@@ -58,26 +59,38 @@ function AddMatch() {
 
     const body = await response.json();
     const data = body["data"];
-    const {
-      kills,
-      deaths,
-      assists,
-      totalDamageDealtToChampions: damage,
-      goldEarned: gold
-    } = data["participants"][0]["stats"];
+
     // 3102504145
 
-    setBlueTop({
-      summonerName: "",
-      champion: data["participants"][0]["champion"],
-      kills: Number(kills),
-      deaths: Number(deaths),
-      assists: Number(assists),
-      damage: Number(damage),
-      gold: Number(gold)
-    });
+    const setLane = i => {
+      const {
+        kills,
+        deaths,
+        assists,
+        totalDamageDealtToChampions: damage,
+        goldEarned: gold
+      } = data["participants"][i]["stats"];
+      return {
+        summonerName: "",
+        champion: data["participants"][i]["champion"],
+        kills: Number(kills),
+        deaths: Number(deaths),
+        assists: Number(assists),
+        damage: Number(damage),
+        gold: Number(gold)
+      };
+    };
 
-    console.log(blueTop);
+    setBlueTop(setLane(0));
+    setBlueJungle(setLane(1));
+    setBlueMid(setLane(2));
+    setBlueCarry(setLane(3));
+    setBlueSupport(setLane(4));
+    setRedTop(setLane(5));
+    setRedJungle(setLane(6));
+    setRedMid(setLane(7));
+    setRedCarry(setLane(8));
+    setRedSupport(setLane(9));
   };
 
   const getMatch = () => {
@@ -117,12 +130,48 @@ function AddMatch() {
             <legend>Top</legend>
             <PlayerInfo playerData={blueTop} setPlayerData={setBlueTop} />
           </fieldset>
+          <fieldset player="true">
+            <legend>Jungle</legend>
+            <PlayerInfo playerData={blueJungle} setPlayerData={setBlueJungle} />
+          </fieldset>
+          <fieldset player="true">
+            <legend>Mid</legend>
+            <PlayerInfo playerData={blueMid} setPlayerData={setBlueMid} />
+          </fieldset>
+          <fieldset player="true">
+            <legend>Carry</legend>
+            <PlayerInfo playerData={blueCarry} setPlayerData={setBlueCarry} />
+          </fieldset>
+          <fieldset player="true">
+            <legend>Support</legend>
+            <PlayerInfo
+              playerData={blueSupport}
+              setPlayerData={setBlueSupport}
+            />
+          </fieldset>
           <button type="submit">Submit</button>
         </Division>
         <Division direction="right">
           Red Side
           <fieldset player="true">
             <legend>Top</legend>
+            <PlayerInfo playerData={redTop} setPlayerData={setRedTop} />
+          </fieldset>
+          <fieldset player="true">
+            <legend>Jungle</legend>
+            <PlayerInfo playerData={redJungle} setPlayerData={setRedJungle} />
+          </fieldset>
+          <fieldset player="true">
+            <legend>Mid</legend>
+            <PlayerInfo playerData={redMid} setPlayerData={setRedMid} />
+          </fieldset>
+          <fieldset player="true">
+            <legend>Carry</legend>
+            <PlayerInfo playerData={redCarry} setPlayerData={setRedCarry} />
+          </fieldset>
+          <fieldset player="true">
+            <legend>Support</legend>
+            <PlayerInfo playerData={redSupport} setPlayerData={setRedSupport} />
           </fieldset>
         </Division>
       </fieldset>
