@@ -57,17 +57,17 @@ function AddMatch() {
   };
 
   let teamPlayerInfo = {
-    top: baseStats,
-    jungle: baseStats,
-    mid: baseStats,
-    carry: baseStats,
-    support: baseStats
+    top: { ...baseStats },
+    jungle: { ...baseStats },
+    mid: { ...baseStats },
+    carry: { ...baseStats },
+    support: { ...baseStats }
   };
 
   const [loading, setLoading] = useState(false);
   const [matchID, setMatchID] = useState(0);
-  const [blueTeam, setBlueTeam] = useState(teamPlayerInfo);
-  const [redTeam, setRedTeam] = useState(teamPlayerInfo);
+  const [blueTeam, setBlueTeam] = useState({ ...teamPlayerInfo });
+  const [redTeam, setRedTeam] = useState({ ...teamPlayerInfo });
 
   const callBackendAPI = async match => {
     const response = await fetch(
