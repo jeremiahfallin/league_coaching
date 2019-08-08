@@ -167,46 +167,16 @@ function AddMatch() {
               }}
             />
           </label>
-          <fieldset player="true">
-            <legend>Top</legend>
-            <PlayerInfo
-              playerData={blueTeam}
-              setPlayerData={setBlueTeam}
-              position={"top"}
-            />
-          </fieldset>
-          <fieldset player="true">
-            <legend>Jungle</legend>
-            <PlayerInfo
-              playerData={blueTeam}
-              setPlayerData={setBlueTeam}
-              position={"jungle"}
-            />
-          </fieldset>
-          <fieldset player="true">
-            <legend>Mid</legend>
-            <PlayerInfo
-              playerData={blueTeam}
-              setPlayerData={setBlueTeam}
-              position={"mid"}
-            />
-          </fieldset>
-          <fieldset player="true">
-            <legend>Carry</legend>
-            <PlayerInfo
-              playerData={blueTeam}
-              setPlayerData={setBlueTeam}
-              position={"support"}
-            />
-          </fieldset>
-          <fieldset player="true">
-            <legend>Support</legend>
-            <PlayerInfo
-              playerData={blueTeam}
-              setPlayerData={setBlueTeam}
-              position={"support"}
-            />
-          </fieldset>
+          {Object.keys(blueTeam).map(role => (
+            <fieldset key={role}>
+              <PlayerInfo
+                playerData={blueTeam}
+                setPlayerData={setBlueTeam}
+                position={role}
+                key={role}
+              />
+            </fieldset>
+          ))}
           <button type="submit">Submit</button>
         </Division>
         <Division direction="right">
@@ -223,46 +193,16 @@ function AddMatch() {
               }}
             />
           </label>
-          <fieldset player="true">
-            <legend>Top</legend>
-            <PlayerInfo
-              playerData={redTeam}
-              setPlayerData={setRedTeam}
-              position={"top"}
-            />
-          </fieldset>
-          <fieldset player="true">
-            <legend>Jungle</legend>
-            <PlayerInfo
-              playerData={redTeam}
-              setPlayerData={setRedTeam}
-              position={"jungle"}
-            />
-          </fieldset>
-          <fieldset player="true">
-            <legend>Mid</legend>
-            <PlayerInfo
-              playerData={redTeam}
-              setPlayerData={setRedTeam}
-              position={"mid"}
-            />
-          </fieldset>
-          <fieldset player="true">
-            <legend>Carry</legend>
-            <PlayerInfo
-              playerData={redTeam}
-              setPlayerData={setRedTeam}
-              position={"carry"}
-            />
-          </fieldset>
-          <fieldset player="true">
-            <legend>Support</legend>
-            <PlayerInfo
-              playerData={redTeam}
-              setPlayerData={setRedTeam}
-              position={"support"}
-            />
-          </fieldset>
+          {Object.keys(blueTeam).map(role => (
+            <fieldset key={role}>
+              <PlayerInfo
+                playerData={redTeam}
+                setPlayerData={setRedTeam}
+                position={role}
+                key={role}
+              />
+            </fieldset>
+          ))}
         </Division>
       </fieldset>
     </Form>

@@ -32,7 +32,10 @@ function PlayerInfo({ playerData, setPlayerData, position }) {
     let positionPlayerData = playerData;
     positionPlayerData[position][name] = value;
 
-    setPlayerData({ ...playerData, [playerData[position][name]]: value });
+    setPlayerData({
+      ...playerData,
+      [position]: { ...playerData[position], name: value }
+    });
   };
 
   useEffect(() => {
