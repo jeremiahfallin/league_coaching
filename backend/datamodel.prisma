@@ -7,28 +7,44 @@ enum Permission {
   PERMISSIONUPDATE
 }
 
-type User {
+type Match {
   id: ID! @id
-  email: String! @unique
-  password: String!
-  permissions: [Permission] @scalarList(strategy: RELATION)
+  players: [Player!]! @scalarList(strategy: RELATION)
+  stats: [Stats!]!
+  teams: [Team!]! @scalarList(strategy: RELATION) @relation(name: "TeamsInMatch")
+  duration: Int!
+  winner: Team! @relation(name: "WinnerOfMatch")
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
 
-type Member {
+type Team {
   id: ID! @id
-  firstName: String!
-  lastName: String!
-  middleName: String
-  birthDate: DateTime
-  streetAddress: String
-  city: String
-  state: String
-  zip: String
-  landPhone: String
-  cellPhone: String
-  email: String
+  players: [Player!]! @scalarList(strategy: RELATION)
+  matches: [Match]! @scalarList(strategy: RELATION) @relation(name: "TeamsInMatch")
+}
+
+type Player {
+  id: ID! @id
+  accountID: String!
+  summonerID: String!
+  summonerName: String!
+  team: Team!
+  matches: [Match]! @scalarList(strategy: RELATION)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+}
+
+type Stats {
+  id: ID! @id
+  player: Player!
+  match: Match!
+  role: String!
+  champion: String!
+  kills: Int!
+  deaths: Int!
+  assists: Int!
+  gold: Int!
+  damage: Int!
+  side: String!
 }

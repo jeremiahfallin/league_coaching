@@ -5,62 +5,21 @@ type SuccessMessage {
 }
 
 type Mutation {
-  createMember(
-    firstName: String!
-    lastName: String!
-    middleName: String
-    birthDate: DateTime
-    streetAddress: String
-    city: String
-    state: String
-    zip: String
-    landPhone: String
-    cellPhone: String
-    email: String
-  ): Member!
-  updateMember(
-    id: ID!
-    firstName: String
-    lastName: String
-    middleName: String
-    birthDate: DateTime
-    streetAddress: String
-    city: String
-    state: String
-    zip: String
-    landPhone: String
-    cellPhone: String
-    email: String
-  ): Member!
-  deleteMember(id: ID!): Member
-  signup(email: String!, password: String!): User!
-  signin(email: String!, password: String!): User!
-  signout: SuccessMessage
+  createMatch(
+    players: [Players!]!
+    stats: [Stats!]!
+    teams: [Team!]!
+    duration: Int!
+    winner: Team!
+  ): Match!
+  createPlayer(
+    accountID: String!
+    summonerID: String!
+    role: String!
+    matches: [Match]!
+  )
 }
 
 type Query {
-  members(
-    where: MemberWhereInput
-    orderBy: MemberOrderByInput
-    skip: Int
-    first: Int
-  ): [Member]!
-  member(where: MemberWhereUniqueInput!): Member
-  membersConnection(where: MemberWhereInput): MemberConnection!
-  me: User
-}
-
-type Member {
-  id: ID!
-  firstName: String!
-  lastName: String!
-  middleName: String
-  birthDate: DateTime
-  streetAddress: String
-  city: String
-  state: String
-  zip: String
-  landPhone: String
-  cellPhone: String
-  email: String
+  players(where: PlayerWhereInput): [Match]!
 }

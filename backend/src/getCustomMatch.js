@@ -1,6 +1,6 @@
 const { Kayn, REGIONS } = require("kayn");
 
-const kayn = Kayn("RGAPI-cf44aa1c-3d3b-4bba-8731-1303d13c55aa")({
+const kayn = Kayn("RGAPI-f8afb986-1c53-4d63-8dcd-29c481ca9761")({
   region: REGIONS.NORTH_AMERICA,
   locale: "en_US",
   debugOptions: {

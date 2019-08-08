@@ -4,6 +4,26 @@ import Router from "next/router";
 import Error from "./ErrorMessage";
 import styled from "styled-components";
 import PlayerInfo from "./PlayerInfo";
+import debounce from "lodash.debounce";
+import gql from "graphql-tag";
+
+const CREATE_MATCH_MUTATION = gql`
+  mutation CREATE_MATCH_MUTATION(
+    $players: [Players!]!
+    $stats: [Stats!]!
+    $teams: [Team!]!
+    $duration: Int!
+    $winner: Team!
+  ) {
+    createMatch(
+      players: $players
+      stats: $stats
+      teams: $teams
+      duration: $duration
+      winner: $winner
+    )
+  }
+`;
 
 const Division = styled.div`
   float: ${props => props.direction};
@@ -26,7 +46,7 @@ const GetMatchButton = styled.button`
 `;
 
 function AddMatch() {
-  const baseStats = {
+  let baseStats = {
     summonerName: "",
     champion: "",
     kills: 0,
@@ -36,81 +56,86 @@ function AddMatch() {
     gold: 0
   };
 
+  let teamPlayerInfo = {
+    top: baseStats,
+    jungle: baseStats,
+    mid: baseStats,
+    carry: baseStats,
+    support: baseStats
+  };
+
   const [loading, setLoading] = useState(false);
   const [matchID, setMatchID] = useState(0);
-  const [blueTop, setBlueTop] = useState(baseStats);
-  const [blueJungle, setBlueJungle] = useState(baseStats);
-  const [blueMid, setBlueMid] = useState(baseStats);
-  const [blueCarry, setBlueCarry] = useState(baseStats);
-  const [blueSupport, setBlueSupport] = useState(baseStats);
-  const [redTop, setRedTop] = useState(baseStats);
-  const [redJungle, setRedJungle] = useState(baseStats);
-  const [redMid, setRedMid] = useState(baseStats);
-  const [redCarry, setRedCarry] = useState(baseStats);
-  const [redSupport, setRedSupport] = useState(baseStats);
+  const [blueTeam, setBlueTeam] = useState(teamPlayerInfo);
+  const [redTeam, setRedTeam] = useState(teamPlayerInfo);
 
   const callBackendAPI = async match => {
     const response = await fetch(
       `http://localhost:4444/addmatch?match=${match}`
     );
     if (response.status !== 200) {
+      setLoading(false);
       throw Error(body.message);
     }
 
     const body = await response.json();
+    if (body["message"]) {
+      delete baseStats.summonerName;
+      setBlueTeam(teamPlayerInfo);
+      setRedTeam(teamPlayerInfo);
+      setLoading(false);
+    }
     const data = body["data"];
+    console.log(data);
 
     // 3102504145
-
-    const setLane = i => {
-      const {
-        kills,
-        deaths,
-        assists,
-        totalDamageDealtToChampions: damage,
-        goldEarned: gold
-      } = data["participants"][i]["stats"];
-      return {
-        summonerName: "",
-        champion: data["participants"][i]["champion"],
-        kills: Number(kills),
-        deaths: Number(deaths),
-        assists: Number(assists),
-        damage: Number(damage),
-        gold: Number(gold)
+    if (data) {
+      const setLane = i => {
+        const {
+          kills,
+          deaths,
+          assists,
+          totalDamageDealtToChampions: damage,
+          goldEarned: gold
+        } = data["participants"][i]["stats"];
+        return {
+          champion: data["participants"][i]["champion"],
+          kills: Number(kills),
+          deaths: Number(deaths),
+          assists: Number(assists),
+          damage: Number(damage),
+          gold: Number(gold)
+        };
       };
-    };
 
-    setBlueTop(setLane(0));
-    setBlueJungle(setLane(1));
-    setBlueMid(setLane(2));
-    setBlueCarry(setLane(3));
-    setBlueSupport(setLane(4));
-    setRedTop(setLane(5));
-    setRedJungle(setLane(6));
-    setRedMid(setLane(7));
-    setRedCarry(setLane(8));
-    setRedSupport(setLane(9));
+      for (let i = 0; i < 5; i++) {
+        setBlueTeam(setLane(i));
+      }
+      for (let i = 5; i < 10; i++) {
+        setRedTeam(setLane(i));
+      }
+      setLoading(false);
+    }
   };
 
-  const getMatch = () => {
+  const getMatch = debounce(async e => {
+    setMatchID(e.target.value);
+  }, 350);
+
+  useEffect(() => {
     callBackendAPI(matchID);
-  };
+  }, [matchID]);
 
   return (
     <Form
       onSubmit={async e => {
         e.preventDefault();
-        callBackendAPI("5555");
         Router.push({
           pathname: "/addmatch"
         });
       }}
     >
       <Column>
-        <GetMatchButton type="button" onClick={getMatch}>
-          Retrieve Match
-        </GetMatchButton>
         <label htmlFor="matchID">
           <input
             type="number"
@@ -118,7 +143,11 @@ function AddMatch() {
             name="matchID"
             placeholder="Match ID"
             required
-            onChange={e => setMatchID(e.target.value)}
+            onChange={e => {
+              e.persist();
+              setLoading(true);
+              getMatch(e);
+            }}
           />
         </label>
       </Column>
@@ -126,52 +155,113 @@ function AddMatch() {
       <fieldset disabled={loading} aria-busy={loading}>
         <Division direction="left">
           Blue Side
+          <label htmlFor="blueTeam">
+            <input
+              type="number"
+              id="blueTeam"
+              name="blueTeam"
+              placeholder="Blue Team"
+              required
+              onChange={e => {
+                e.persist();
+              }}
+            />
+          </label>
           <fieldset player="true">
             <legend>Top</legend>
-            <PlayerInfo playerData={blueTop} setPlayerData={setBlueTop} />
+            <PlayerInfo
+              playerData={blueTeam}
+              setPlayerData={setBlueTeam}
+              position={"top"}
+            />
           </fieldset>
           <fieldset player="true">
             <legend>Jungle</legend>
-            <PlayerInfo playerData={blueJungle} setPlayerData={setBlueJungle} />
+            <PlayerInfo
+              playerData={blueTeam}
+              setPlayerData={setBlueTeam}
+              position={"jungle"}
+            />
           </fieldset>
           <fieldset player="true">
             <legend>Mid</legend>
-            <PlayerInfo playerData={blueMid} setPlayerData={setBlueMid} />
+            <PlayerInfo
+              playerData={blueTeam}
+              setPlayerData={setBlueTeam}
+              position={"mid"}
+            />
           </fieldset>
           <fieldset player="true">
             <legend>Carry</legend>
-            <PlayerInfo playerData={blueCarry} setPlayerData={setBlueCarry} />
+            <PlayerInfo
+              playerData={blueTeam}
+              setPlayerData={setBlueTeam}
+              position={"support"}
+            />
           </fieldset>
           <fieldset player="true">
             <legend>Support</legend>
             <PlayerInfo
-              playerData={blueSupport}
-              setPlayerData={setBlueSupport}
+              playerData={blueTeam}
+              setPlayerData={setBlueTeam}
+              position={"support"}
             />
           </fieldset>
           <button type="submit">Submit</button>
         </Division>
         <Division direction="right">
           Red Side
+          <label htmlFor="redTeam">
+            <input
+              type="number"
+              id="redTeam"
+              name="redTeam"
+              placeholder="Red Team"
+              required
+              onChange={e => {
+                e.persist();
+              }}
+            />
+          </label>
           <fieldset player="true">
             <legend>Top</legend>
-            <PlayerInfo playerData={redTop} setPlayerData={setRedTop} />
+            <PlayerInfo
+              playerData={redTeam}
+              setPlayerData={setRedTeam}
+              position={"top"}
+            />
           </fieldset>
           <fieldset player="true">
             <legend>Jungle</legend>
-            <PlayerInfo playerData={redJungle} setPlayerData={setRedJungle} />
+            <PlayerInfo
+              playerData={redTeam}
+              setPlayerData={setRedTeam}
+              position={"jungle"}
+            />
           </fieldset>
           <fieldset player="true">
             <legend>Mid</legend>
-            <PlayerInfo playerData={redMid} setPlayerData={setRedMid} />
+            <PlayerInfo
+              playerData={redTeam}
+              setPlayerData={setRedTeam}
+              position={"mid"}
+            />
           </fieldset>
           <fieldset player="true">
             <legend>Carry</legend>
-            <PlayerInfo playerData={redCarry} setPlayerData={setRedCarry} />
+            <PlayerInfo
+              playerData={redTeam}
+              setPlayerData={setRedTeam}
+              position={"carry"}
+            />
           </fieldset>
           <fieldset player="true">
             <legend>Support</legend>
-            <PlayerInfo playerData={redSupport} setPlayerData={setRedSupport} />
+            <PlayerInfo
+              playerData={redTeam}
+              setPlayerData={setRedTeam}
+              position={"support"}
+            />
           </fieldset>
         </Division>
       </fieldset>

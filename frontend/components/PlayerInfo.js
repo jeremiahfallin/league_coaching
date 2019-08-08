@@ -16,7 +16,7 @@ const Box = styled.div`
   margin: 4px;
 `;
 
-function PlayerInfo({ playerData, setPlayerData }) {
+function PlayerInfo({ playerData, setPlayerData, position }) {
   const {
     summonerName,
     champion,
@@ -25,13 +25,13 @@ function PlayerInfo({ playerData, setPlayerData }) {
     assists,
     damage,
     gold
-  } = playerData;
-  const widthKDA = 10;
+  } = playerData[position];
 
   const handlePlayerDataChange = e => {
     const { name, value } = e.target;
 
-    setPlayerData({ ...playerData, [name]: value });
+    setPlayerData({ ...playerData, [playerData[position][name]]: value });
+    console.log(playerData);
   };
 
   return (

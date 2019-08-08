@@ -22,8 +22,11 @@ server.express.use(cors(corsOptions));
 
 // decode the JWT so we can get the user Id on each request
 server.express.get("/addmatch", async (req, res) => {
-  data = await getCustomMatch(req.query.match);
-
+  try {
+    data = await getCustomMatch(req.query.match);
+  } catch (err) {
+    res.send({ message: "No match with that ID." });
+  }
   res.send({ data });
 });
 
