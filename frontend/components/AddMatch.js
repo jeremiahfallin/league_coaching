@@ -6,6 +6,7 @@ import styled from "styled-components";
 import PlayerInfo from "./PlayerInfo";
 import debounce from "lodash.debounce";
 import gql from "graphql-tag";
+import { Mutation, Query } from "react-apollo";
 
 const CREATE_MATCH_MUTATION = gql`
   mutation CREATE_MATCH_MUTATION(
@@ -81,15 +82,17 @@ function AddMatch() {
     const body = await response.json();
     if (body["message"]) {
       delete baseStats.summonerName;
-      setBlueTeam(teamPlayerInfo);
-      setRedTeam(teamPlayerInfo);
+      setBlueTeam({ ...teamPlayerInfo });
+      setRedTeam({ ...teamPlayerInfo });
       setLoading(false);
     }
     const data = body["data"];
-    console.log(data);
 
     // 3102504145
     if (data) {
+      let blueLaneInfo = {};
+      let redLaneInfo = {};
+      let playerStats = data["participants"];
       const setLane = i => {
         const {
           kills,
@@ -108,15 +111,26 @@ function AddMatch() {
         };
       };
 
-      for (let i = 0; i < 5; i++) {
-        setBlueTeam(setLane(i));
-      }
-      for (let i = 5; i < 10; i++) {
-        setRedTeam(setLane(i));
-      }
+      Object.keys(blueTeam).forEach((position, index) => {
+        blueLaneInfo[position] = {};
+        redLaneInfo[position] = {};
+        blueLaneInfo[position] = {
+          ...setLane(index)
+        };
+        redLaneInfo[position] = {
+          ...setLane(index + 5)
+        };
+      });
+      setBlueTeam({ ...blueLaneInfo });
+
+      setRedTeam({ ...redLaneInfo });
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log(blueTeam);
+  }, [blueTeam]);
 
   const getMatch = debounce(async e => {
     setMatchID(e.target.value);
@@ -168,7 +182,8 @@ function AddMatch() {
             />
           </label>
           {Object.keys(blueTeam).map(role => (
-            <fieldset key={role}>
+            <fieldset player="true" key={role}>
+              <legend>{role.charAt(0).toUpperCase() + role.slice(1)}</legend>
               <PlayerInfo
                 playerData={blueTeam}
                 setPlayerData={setBlueTeam}
@@ -181,7 +196,7 @@ function AddMatch() {
         </Division>
         <Division direction="right">
           Red Side
-          <label htmlFor="redTeam">
+          <label player="true" htmlFor="redTeam">
             <input
               type="number"
               id="redTeam"
@@ -193,8 +208,9 @@ function AddMatch() {
               }}
             />
           </label>
-          {Object.keys(blueTeam).map(role => (
-            <fieldset key={role}>
+          {Object.keys(redTeam).map(role => (
+            <fieldset player="true" key={role}>
+              <legend>{role.charAt(0).toUpperCase() + role.slice(1)}</legend>
               <PlayerInfo
                 playerData={redTeam}
                 setPlayerData={setRedTeam}

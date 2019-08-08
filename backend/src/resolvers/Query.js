@@ -2,9 +2,11 @@ const { forwardTo } = require("prisma-binding");
 const { hasPermission } = require("../utils");
 
 const Query = {
-  members: forwardTo("db"),
-  member: forwardTo("db"),
-  membersConnection: forwardTo("db")
+  players: forwardTo("db"),
+
+  async players(parent, args, ctx, info) {
+    return ctx.db.query.players({}, info);
+  }
 };
 
 module.exports = Query;

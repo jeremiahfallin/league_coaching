@@ -6,7 +6,7 @@ type SuccessMessage {
 
 type Mutation {
   createMatch(
-    players: [Players!]!
+    players: [Player!]!
     stats: [Stats!]!
     teams: [Team!]!
     duration: Int!
@@ -17,7 +17,8 @@ type Mutation {
     summonerID: String!
     role: String!
     matches: [Match]!
-  )
+  ): Player!
+  createTeam(players: [Player!]!): Team!
 }
 
 type Query {

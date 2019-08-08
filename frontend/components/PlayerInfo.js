@@ -29,18 +29,16 @@ function PlayerInfo({ playerData, setPlayerData, position }) {
 
   const handlePlayerDataChange = e => {
     const { name, value } = e.target;
-    let positionPlayerData = playerData;
-    positionPlayerData[position][name] = value;
 
     setPlayerData({
       ...playerData,
-      [position]: { ...playerData[position], name: value }
+      [position]: { ...playerData[position], [name]: value }
     });
   };
 
-  useEffect(() => {
-    console.log(playerData);
-  }, [playerData]);
+  // useEffect(() => {
+  //   console.log(playerData);
+  // }, [playerData]);
 
   return (
     <Column>
