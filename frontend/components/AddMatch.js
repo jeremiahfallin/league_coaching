@@ -7,6 +7,7 @@ import PlayerInfo from "./PlayerInfo";
 import debounce from "lodash.debounce";
 import gql from "graphql-tag";
 import { Mutation, Query } from "react-apollo";
+import PropTypes from "prop-types";
 
 const CREATE_MATCH_MUTATION = gql`
   mutation CREATE_MATCH_MUTATION(
@@ -22,7 +23,9 @@ const CREATE_MATCH_MUTATION = gql`
       teams: $teams
       duration: $duration
       winner: $winner
-    )
+    ) {
+      id
+    }
   }
 `;
 
@@ -36,20 +39,11 @@ const Column = styled.div`
   flex-direction: column;
 `;
 
-const GetMatchButton = styled.button`
-  width: auto;
-  background: ${props => props.theme.phthalo};
-  color: white;
-  border: 0;
-  font-size: 2rem;
-  font-weight: 600;
-  padding: 0.5rem 1.2rem;
-`;
-
 function AddMatch() {
   let baseStats = {
     summonerName: "",
     champion: "",
+    role: "",
     kills: 0,
     deaths: 0,
     assists: 0,
@@ -65,8 +59,8 @@ function AddMatch() {
     support: { ...baseStats }
   };
 
-  const [loading, setLoading] = useState(false);
-  const [matchID, setMatchID] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [matchID, setMatchID] = useState();
   const [blueTeam, setBlueTeam] = useState({ ...teamPlayerInfo });
   const [redTeam, setRedTeam] = useState({ ...teamPlayerInfo });
 
@@ -75,7 +69,7 @@ function AddMatch() {
       `http://localhost:4444/addmatch?match=${match}`
     );
     if (response.status !== 200) {
-      setLoading(false);
+      setIsLoaded(false);
       throw Error(body.message);
     }
 
@@ -84,7 +78,7 @@ function AddMatch() {
       delete baseStats.summonerName;
       setBlueTeam({ ...teamPlayerInfo });
       setRedTeam({ ...teamPlayerInfo });
-      setLoading(false);
+      setIsLoaded(false);
     }
     const data = body["data"];
 
@@ -92,7 +86,6 @@ function AddMatch() {
     if (data) {
       let blueLaneInfo = {};
       let redLaneInfo = {};
-      let playerStats = data["participants"];
       const setLane = i => {
         const {
           kills,
@@ -124,13 +117,9 @@ function AddMatch() {
       setBlueTeam({ ...blueLaneInfo });
 
       setRedTeam({ ...redLaneInfo });
-      setLoading(false);
+      setIsLoaded(false);
     }
   };
-
-  useEffect(() => {
-    console.log(blueTeam);
-  }, [blueTeam]);
 
   const getMatch = debounce(async e => {
     setMatchID(e.target.value);
@@ -141,88 +130,114 @@ function AddMatch() {
   }, [matchID]);
 
   return (
-    <Form
-      onSubmit={async e => {
-        e.preventDefault();
-        Router.push({
-          pathname: "/addmatch"
-        });
+    <Mutation
+      mutation={CREATE_MATCH_MUTATION}
+      variables={{
+        players: players,
+        stats: stats,
+        teams: team,
+        duration: 5,
+        winner: team
       }}
     >
-      <Column>
-        <label htmlFor="matchID">
-          <input
-            type="number"
-            id="matchID"
-            name="matchID"
-            placeholder="Match ID"
-            required
-            onChange={e => {
-              e.persist();
-              setLoading(true);
-              getMatch(e);
-            }}
-          />
-        </label>
-      </Column>
+      {(createMatch, { loading, error }) => (
+        <Form
+          onSubmit={async e => {
+            e.preventDefault();
+            Router.push({
+              pathname: "/addmatch"
+            });
+          }}
+        >
+          <Column>
+            <label htmlFor="matchID">
+              <input
+                type="number"
+                id="matchID"
+                name="matchID"
+                placeholder="Match ID"
+                required
+                onChange={e => {
+                  e.persist();
+                  setIsLoaded(true);
+                  getMatch(e);
+                }}
+              />
+            </label>
+          </Column>
 
-      <fieldset disabled={loading} aria-busy={loading}>
-        <Division direction="left">
-          Blue Side
-          <label htmlFor="blueTeam">
-            <input
-              type="number"
-              id="blueTeam"
-              name="blueTeam"
-              placeholder="Blue Team"
-              required
-              onChange={e => {
-                e.persist();
-              }}
-            />
-          </label>
-          {Object.keys(blueTeam).map(role => (
-            <fieldset player="true" key={role}>
-              <legend>{role.charAt(0).toUpperCase() + role.slice(1)}</legend>
-              <PlayerInfo
-                playerData={blueTeam}
-                setPlayerData={setBlueTeam}
-                position={role}
-                key={role}
-              />
-            </fieldset>
-          ))}
-          <button type="submit">Submit</button>
-        </Division>
-        <Division direction="right">
-          Red Side
-          <label player="true" htmlFor="redTeam">
-            <input
-              type="number"
-              id="redTeam"
-              name="redTeam"
-              placeholder="Red Team"
-              required
-              onChange={e => {
-                e.persist();
-              }}
-            />
-          </label>
-          {Object.keys(redTeam).map(role => (
-            <fieldset player="true" key={role}>
-              <legend>{role.charAt(0).toUpperCase() + role.slice(1)}</legend>
-              <PlayerInfo
-                playerData={redTeam}
-                setPlayerData={setRedTeam}
-                position={role}
-                key={role}
-              />
-            </fieldset>
-          ))}
-        </Division>
-      </fieldset>
-    </Form>
+          <fieldset disabled={isLoaded} aria-busy={loading}>
+            <Division direction="left">
+              Blue Side
+              <label htmlFor="blueTeam">
+                <input
+                  type="text"
+                  id="blueTeam"
+                  name="blueTeam"
+                  placeholder="Blue Team"
+                  required
+                  onChange={e => {
+                    e.persist();
+                  }}
+                />
+              </label>
+              {Object.keys(blueTeam).map(role => (
+                <fieldset player="true" key={role}>
+                  <legend>
+                    {role.charAt(0).toUpperCase() + role.slice(1)}
+                  </legend>
+                  <PlayerInfo
+                    playerData={blueTeam}
+                    setPlayerData={setBlueTeam}
+                    position={role}
+                    key={role}
+                  />
+                </fieldset>
+              ))}
+              <button type="submit">Submit</button>
+            </Division>
+            <Division direction="right">
+              Red Side
+              <label player="true" htmlFor="redTeam">
+                <input
+                  type="text"
+                  id="redTeam"
+                  name="redTeam"
+                  placeholder="Red Team"
+                  required
+                  onChange={e => {
+                    e.persist();
+                  }}
+                />
+              </label>
+              {Object.keys(redTeam).map(role => (
+                <fieldset player="true" key={role}>
+                  <legend>
+                    {role.charAt(0).toUpperCase() + role.slice(1)}
+                  </legend>
+                  <PlayerInfo
+                    playerData={redTeam}
+                    setPlayerData={setRedTeam}
+                    position={role}
+                    key={role}
+                  />
+                </fieldset>
+              ))}
+            </Division>
+          </fieldset>
+        </Form>
+      )}
+    </Mutation>
   );
 }
+
+AddMatch.PropTypes = {
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    email: PropTypes.string,
+    id: PropTypes.string,
+    permissions: PropTypes.array
+  }).isRequired
+};
 
 export default AddMatch;

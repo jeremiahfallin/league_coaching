@@ -20,6 +20,7 @@ function PlayerInfo({ playerData, setPlayerData, position }) {
   const {
     summonerName,
     champion,
+    role,
     kills,
     deaths,
     assists,
@@ -49,13 +50,22 @@ function PlayerInfo({ playerData, setPlayerData, position }) {
         value={summonerName}
         handler={handlePlayerDataChange}
       />
-      <InfoBox
-        title={"Champion"}
-        type={"text"}
-        name={"champion"}
-        value={champion}
-        handler={handlePlayerDataChange}
-      />
+      <Row>
+        <InfoBox
+          title={"Champion"}
+          type={"text"}
+          name={"champion"}
+          value={champion}
+          handler={handlePlayerDataChange}
+        />
+        <InfoBox
+          title={"Role"}
+          type={"text"}
+          name={"role"}
+          value={role}
+          handler={handlePlayerDataChange}
+        />
+      </Row>
 
       <Row>
         <InfoBox

@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/jeremiahfallin-813d56/league_coaching/dev
-# timestamp: Wed Aug 07 2019 13:51:08 GMT-0400 (Eastern Daylight Time)
+# timestamp: Fri Aug 09 2019 18:09:12 GMT-0400 (Eastern Daylight Time)
 
 type AggregateMatch {
   count: Int!
@@ -569,7 +569,8 @@ type Player implements Node {
   accountID: String!
   summonerID: String!
   summonerName: String!
-  team: Team!
+  team: Team
+  role: String
   matches(where: MatchWhereInput, orderBy: MatchOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Match!]
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -590,7 +591,8 @@ input PlayerCreateInput {
   accountID: String!
   summonerID: String!
   summonerName: String!
-  team: TeamCreateOneWithoutPlayersInput!
+  role: String
+  team: TeamCreateOneWithoutPlayersInput
   matches: MatchCreateManyWithoutPlayersInput
 }
 
@@ -614,7 +616,8 @@ input PlayerCreateWithoutMatchesInput {
   accountID: String!
   summonerID: String!
   summonerName: String!
-  team: TeamCreateOneWithoutPlayersInput!
+  role: String
+  team: TeamCreateOneWithoutPlayersInput
 }
 
 input PlayerCreateWithoutTeamInput {
@@ -622,6 +625,7 @@ input PlayerCreateWithoutTeamInput {
   accountID: String!
   summonerID: String!
   summonerName: String!
+  role: String
   matches: MatchCreateManyWithoutPlayersInput
 }
 
@@ -643,6 +647,8 @@ enum PlayerOrderByInput {
   summonerID_DESC
   summonerName_ASC
   summonerName_DESC
+  role_ASC
+  role_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -654,6 +660,7 @@ type PlayerPreviousValues {
   accountID: String!
   summonerID: String!
   summonerName: String!
+  role: String
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -827,6 +834,46 @@ input PlayerScalarWhereInput {
 
   """All values not ending with the given string."""
   summonerName_not_ends_with: String
+  role: String
+
+  """All values that are not equal to given value."""
+  role_not: String
+
+  """All values that are contained in given list."""
+  role_in: [String!]
+
+  """All values that are not contained in given list."""
+  role_not_in: [String!]
+
+  """All values less than the given value."""
+  role_lt: String
+
+  """All values less than or equal the given value."""
+  role_lte: String
+
+  """All values greater than the given value."""
+  role_gt: String
+
+  """All values greater than or equal the given value."""
+  role_gte: String
+
+  """All values containing the given string."""
+  role_contains: String
+
+  """All values not containing the given string."""
+  role_not_contains: String
+
+  """All values starting with the given string."""
+  role_starts_with: String
+
+  """All values not starting with the given string."""
+  role_not_starts_with: String
+
+  """All values ending with the given string."""
+  role_ends_with: String
+
+  """All values not ending with the given string."""
+  role_not_ends_with: String
   createdAt: DateTime
 
   """All values that are not equal to given value."""
@@ -914,7 +961,8 @@ input PlayerUpdateDataInput {
   accountID: String
   summonerID: String
   summonerName: String
-  team: TeamUpdateOneRequiredWithoutPlayersInput
+  role: String
+  team: TeamUpdateOneWithoutPlayersInput
   matches: MatchUpdateManyWithoutPlayersInput
 }
 
@@ -922,7 +970,8 @@ input PlayerUpdateInput {
   accountID: String
   summonerID: String
   summonerName: String
-  team: TeamUpdateOneRequiredWithoutPlayersInput
+  role: String
+  team: TeamUpdateOneWithoutPlayersInput
   matches: MatchUpdateManyWithoutPlayersInput
 }
 
@@ -930,12 +979,14 @@ input PlayerUpdateManyDataInput {
   accountID: String
   summonerID: String
   summonerName: String
+  role: String
 }
 
 input PlayerUpdateManyMutationInput {
   accountID: String
   summonerID: String
   summonerName: String
+  role: String
 }
 
 input PlayerUpdateManyWithoutMatchesInput {
@@ -978,13 +1029,15 @@ input PlayerUpdateWithoutMatchesDataInput {
   accountID: String
   summonerID: String
   summonerName: String
-  team: TeamUpdateOneRequiredWithoutPlayersInput
+  role: String
+  team: TeamUpdateOneWithoutPlayersInput
 }
 
 input PlayerUpdateWithoutTeamDataInput {
   accountID: String
   summonerID: String
   summonerName: String
+  role: String
   matches: MatchUpdateManyWithoutPlayersInput
 }
 
@@ -1184,6 +1237,46 @@ input PlayerWhereInput {
 
   """All values not ending with the given string."""
   summonerName_not_ends_with: String
+  role: String
+
+  """All values that are not equal to given value."""
+  role_not: String
+
+  """All values that are contained in given list."""
+  role_in: [String!]
+
+  """All values that are not contained in given list."""
+  role_not_in: [String!]
+
+  """All values less than the given value."""
+  role_lt: String
+
+  """All values less than or equal the given value."""
+  role_lte: String
+
+  """All values greater than the given value."""
+  role_gt: String
+
+  """All values greater than or equal the given value."""
+  role_gte: String
+
+  """All values containing the given string."""
+  role_contains: String
+
+  """All values not containing the given string."""
+  role_not_contains: String
+
+  """All values starting with the given string."""
+  role_starts_with: String
+
+  """All values not starting with the given string."""
+  role_not_starts_with: String
+
+  """All values ending with the given string."""
+  role_ends_with: String
+
+  """All values not ending with the given string."""
+  role_not_ends_with: String
   createdAt: DateTime
 
   """All values that are not equal to given value."""
@@ -1236,6 +1329,8 @@ input PlayerWhereInput {
 
 input PlayerWhereUniqueInput {
   id: ID
+  accountID: String
+  summonerID: String
 }
 
 type Query {
@@ -1270,7 +1365,6 @@ type Stats implements Node {
   assists: Int!
   gold: Int!
   damage: Int!
-  side: String!
 }
 
 """A connection to a list of items."""
@@ -1292,7 +1386,6 @@ input StatsCreateInput {
   assists: Int!
   gold: Int!
   damage: Int!
-  side: String!
   player: PlayerCreateOneInput!
   match: MatchCreateOneWithoutStatsInput!
 }
@@ -1311,7 +1404,6 @@ input StatsCreateWithoutMatchInput {
   assists: Int!
   gold: Int!
   damage: Int!
-  side: String!
   player: PlayerCreateOneInput!
 }
 
@@ -1341,8 +1433,6 @@ enum StatsOrderByInput {
   gold_DESC
   damage_ASC
   damage_DESC
-  side_ASC
-  side_DESC
 }
 
 type StatsPreviousValues {
@@ -1354,7 +1444,6 @@ type StatsPreviousValues {
   assists: Int!
   gold: Int!
   damage: Int!
-  side: String!
 }
 
 input StatsScalarWhereInput {
@@ -1596,46 +1685,6 @@ input StatsScalarWhereInput {
 
   """All values greater than or equal the given value."""
   damage_gte: Int
-  side: String
-
-  """All values that are not equal to given value."""
-  side_not: String
-
-  """All values that are contained in given list."""
-  side_in: [String!]
-
-  """All values that are not contained in given list."""
-  side_not_in: [String!]
-
-  """All values less than the given value."""
-  side_lt: String
-
-  """All values less than or equal the given value."""
-  side_lte: String
-
-  """All values greater than the given value."""
-  side_gt: String
-
-  """All values greater than or equal the given value."""
-  side_gte: String
-
-  """All values containing the given string."""
-  side_contains: String
-
-  """All values not containing the given string."""
-  side_not_contains: String
-
-  """All values starting with the given string."""
-  side_starts_with: String
-
-  """All values not starting with the given string."""
-  side_not_starts_with: String
-
-  """All values ending with the given string."""
-  side_ends_with: String
-
-  """All values not ending with the given string."""
-  side_not_ends_with: String
 }
 
 type StatsSubscriptionPayload {
@@ -1683,7 +1732,6 @@ input StatsUpdateInput {
   assists: Int
   gold: Int
   damage: Int
-  side: String
   player: PlayerUpdateOneRequiredInput
   match: MatchUpdateOneRequiredWithoutStatsInput
 }
@@ -1696,7 +1744,6 @@ input StatsUpdateManyDataInput {
   assists: Int
   gold: Int
   damage: Int
-  side: String
 }
 
 input StatsUpdateManyMutationInput {
@@ -1707,7 +1754,6 @@ input StatsUpdateManyMutationInput {
   assists: Int
   gold: Int
   damage: Int
-  side: String
 }
 
 input StatsUpdateManyWithoutMatchInput {
@@ -1735,7 +1781,6 @@ input StatsUpdateWithoutMatchDataInput {
   assists: Int
   gold: Int
   damage: Int
-  side: String
   player: PlayerUpdateOneRequiredInput
 }
 
@@ -1989,46 +2034,6 @@ input StatsWhereInput {
 
   """All values greater than or equal the given value."""
   damage_gte: Int
-  side: String
-
-  """All values that are not equal to given value."""
-  side_not: String
-
-  """All values that are contained in given list."""
-  side_in: [String!]
-
-  """All values that are not contained in given list."""
-  side_not_in: [String!]
-
-  """All values less than the given value."""
-  side_lt: String
-
-  """All values less than or equal the given value."""
-  side_lte: String
-
-  """All values greater than the given value."""
-  side_gt: String
-
-  """All values greater than or equal the given value."""
-  side_gte: String
-
-  """All values containing the given string."""
-  side_contains: String
-
-  """All values not containing the given string."""
-  side_not_contains: String
-
-  """All values starting with the given string."""
-  side_starts_with: String
-
-  """All values not starting with the given string."""
-  side_not_starts_with: String
-
-  """All values ending with the given string."""
-  side_ends_with: String
-
-  """All values not ending with the given string."""
-  side_not_ends_with: String
   player: PlayerWhereInput
   match: MatchWhereInput
 }
@@ -2225,9 +2230,11 @@ input TeamUpdateOneRequiredInput {
   upsert: TeamUpsertNestedInput
 }
 
-input TeamUpdateOneRequiredWithoutPlayersInput {
+input TeamUpdateOneWithoutPlayersInput {
   create: TeamCreateWithoutPlayersInput
   connect: TeamWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
   update: TeamUpdateWithoutPlayersDataInput
   upsert: TeamUpsertWithoutPlayersInput
 }

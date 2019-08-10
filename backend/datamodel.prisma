@@ -26,10 +26,11 @@ type Team {
 
 type Player {
   id: ID! @id
-  accountID: String!
-  summonerID: String!
+  accountID: String! @unique
+  summonerID: String! @unique
   summonerName: String!
-  team: Team!
+  team: Team
+  role: String
   matches: [Match]! @scalarList(strategy: RELATION)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
@@ -46,5 +47,4 @@ type Stats {
   assists: Int!
   gold: Int!
   damage: Int!
-  side: String!
 }
