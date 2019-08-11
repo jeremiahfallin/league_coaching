@@ -23,4 +23,6 @@ type Mutation {
 
 type Query {
   players(where: PlayerWhereInput): [Match]!
+  team(where: TeamWhereInput): Team!
+  teams(where: TeamWhereUniqueInput!): Team
 }

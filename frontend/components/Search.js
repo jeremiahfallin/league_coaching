@@ -7,35 +7,45 @@ import { DropDown, DropDownTeam, SearchStyles } from "./styles/DropDown";
 
 const SEARCH_TEAMS_QUERY = gql`
   query SEARCH_TEAMS_QUERY($searchTerm: String!) {
-    team(where: [{ name_contains: $searchTerm }]) {
+    teams(where: [{ name_contains: $searchTerm }]) {
       id
       name
     }
   }
 `;
 
-function AutoComplete({ searchTeamName }) {
-  const [teamNames, setTeamNames] = useState([]);
+const SEARCH_PLAYERS_QUERY = gql`
+  query SEARCH_PLAYERS_QUERY($searchTerm: String!) {
+    players(where: [{ summonerName_contains: $searchTerm }]) {
+      id
+      summonerName
+    }
+  }
+`;
+
+function AutoComplete({ type }) {
+  const [names, setNames] = useState([]);
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
 
-  onChange = debounce(async (e, client) => {
+  resetIdCounter();
+
+  const onChange = debounce(async (e, client) => {
     console.log("Searching. . .");
     //turn on loading.
     setLoading(true);
     //Manually query apollo client.
     const res = await client.query({
-      query: SEARCH_TEAMS_QUERY,
+      query: type === "players" ? SEARCH_PLAYERS_QUERY : SEARCH_TEAMS_QUERY,
       variables: { searchTerm: e.target.value }
     });
-    setTeamNames(res.data.teams);
+    setNames(type === "players" ? res.data.summonerNames : res.data.names);
     setLoading(false);
   }, 350);
+
   return (
     <SearchStyles>
-      <Downshift
-        onChange={routeToItem}
-        teamToString={team => (team === null ? "" : team.name)}
-      >
+      <Downshift itemToString={item => (item === null ? "" : item.name)}>
         {({
           getInputProps,
           getTeamProps,
@@ -49,12 +59,13 @@ function AutoComplete({ searchTeamName }) {
                 <input
                   {...getInputProps({
                     type: "search",
-                    placeholder: "Team Name",
+                    placeholder:
+                      type === "players" ? "Summoner Name" : "Team Name",
                     id: "search",
                     className: loading ? "loading" : "",
                     onChange: e => {
                       e.persist();
-                      this.onChange(e, client);
+                      onChange(e, client);
                     }
                   })}
                 />
@@ -62,15 +73,18 @@ function AutoComplete({ searchTeamName }) {
             </ApolloConsumer>
             {isOpen && (
               <DropDown>
-                {teamNames.map((team, index) => (
+                {names.map((team, index) => (
                   <DropDownTeam
                     {...getTeamProps({ team })}
                     key={team.id}
                     highlighted={index === highlightedIndex}
                   />
                 ))}
-                {!teamNames.length && loading && (
-                  <DropDownTeam> Nothing found for {inputValue}</DropDownTeam>
+                {!names.length && loading && (
+                  <DropDownTeam>
+                    No {type === "players" ? "player" : "team"} found for{" "}
+                    {inputValue}
+                  </DropDownTeam>
                 )}
               </DropDown>
             )}
@@ -80,3 +94,5 @@ function AutoComplete({ searchTeamName }) {
     </SearchStyles>
   );
 }
+
+export default AutoComplete;

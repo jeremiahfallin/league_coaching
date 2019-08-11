@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import Search from "./Search";
 
 const Row = styled.div`
   display: flex;
@@ -36,10 +37,6 @@ function PlayerInfo({ playerData, setPlayerData, position }) {
       [position]: { ...playerData[position], [name]: value }
     });
   };
-
-  // useEffect(() => {
-  //   console.log(playerData);
-  // }, [playerData]);
 
   return (
     <Column>

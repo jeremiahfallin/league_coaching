@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/jeremiahfallin-813d56/league_coaching/dev
-# timestamp: Fri Aug 09 2019 18:09:12 GMT-0400 (Eastern Daylight Time)
+# timestamp: Sat Aug 10 2019 19:01:47 GMT-0400 (Eastern Daylight Time)
 
 type AggregateMatch {
   count: Int!
@@ -531,6 +531,7 @@ type Mutation {
   updateManyMatches(data: MatchUpdateManyMutationInput!, where: MatchWhereInput): BatchPayload!
   updateManyStatses(data: StatsUpdateManyMutationInput!, where: StatsWhereInput): BatchPayload!
   updateManyPlayers(data: PlayerUpdateManyMutationInput!, where: PlayerWhereInput): BatchPayload!
+  updateManyTeams(data: TeamUpdateManyMutationInput!, where: TeamWhereInput): BatchPayload!
   deleteManyMatches(where: MatchWhereInput): BatchPayload!
   deleteManyStatses(where: StatsWhereInput): BatchPayload!
   deleteManyPlayers(where: PlayerWhereInput): BatchPayload!
@@ -2051,6 +2052,7 @@ type Subscription {
 
 type Team implements Node {
   id: ID!
+  name: String!
   players(where: PlayerWhereInput, orderBy: PlayerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Player!]
   matches(where: MatchWhereInput, orderBy: MatchOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Match!]
 }
@@ -2067,6 +2069,7 @@ type TeamConnection {
 
 input TeamCreateInput {
   id: ID
+  name: String!
   players: PlayerCreateManyWithoutTeamInput
   matches: MatchCreateManyWithoutTeamsInput
 }
@@ -2088,11 +2091,13 @@ input TeamCreateOneWithoutPlayersInput {
 
 input TeamCreateWithoutMatchesInput {
   id: ID
+  name: String!
   players: PlayerCreateManyWithoutTeamInput
 }
 
 input TeamCreateWithoutPlayersInput {
   id: ID
+  name: String!
   matches: MatchCreateManyWithoutTeamsInput
 }
 
@@ -2108,10 +2113,13 @@ type TeamEdge {
 enum TeamOrderByInput {
   id_ASC
   id_DESC
+  name_ASC
+  name_DESC
 }
 
 type TeamPreviousValues {
   id: ID!
+  name: String!
 }
 
 input TeamScalarWhereInput {
@@ -2163,6 +2171,46 @@ input TeamScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
 }
 
 type TeamSubscriptionPayload {
@@ -2203,13 +2251,23 @@ input TeamSubscriptionWhereInput {
 }
 
 input TeamUpdateDataInput {
+  name: String
   players: PlayerUpdateManyWithoutTeamInput
   matches: MatchUpdateManyWithoutTeamsInput
 }
 
 input TeamUpdateInput {
+  name: String
   players: PlayerUpdateManyWithoutTeamInput
   matches: MatchUpdateManyWithoutTeamsInput
+}
+
+input TeamUpdateManyDataInput {
+  name: String
+}
+
+input TeamUpdateManyMutationInput {
+  name: String
 }
 
 input TeamUpdateManyWithoutMatchesInput {
@@ -2219,8 +2277,14 @@ input TeamUpdateManyWithoutMatchesInput {
   disconnect: [TeamWhereUniqueInput!]
   delete: [TeamWhereUniqueInput!]
   update: [TeamUpdateWithWhereUniqueWithoutMatchesInput!]
+  updateMany: [TeamUpdateManyWithWhereNestedInput!]
   deleteMany: [TeamScalarWhereInput!]
   upsert: [TeamUpsertWithWhereUniqueWithoutMatchesInput!]
+}
+
+input TeamUpdateManyWithWhereNestedInput {
+  where: TeamScalarWhereInput!
+  data: TeamUpdateManyDataInput!
 }
 
 input TeamUpdateOneRequiredInput {
@@ -2240,10 +2304,12 @@ input TeamUpdateOneWithoutPlayersInput {
 }
 
 input TeamUpdateWithoutMatchesDataInput {
+  name: String
   players: PlayerUpdateManyWithoutTeamInput
 }
 
 input TeamUpdateWithoutPlayersDataInput {
+  name: String
   matches: MatchUpdateManyWithoutTeamsInput
 }
 
@@ -2317,6 +2383,46 @@ input TeamWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
   players_every: PlayerWhereInput
   players_some: PlayerWhereInput
   players_none: PlayerWhereInput
