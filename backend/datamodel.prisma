@@ -27,8 +27,6 @@ type Team {
 
 type Player {
   id: ID! @id
-  accountID: String! @unique
-  summonerID: String! @unique
   summonerName: String!
   team: Team
   role: String

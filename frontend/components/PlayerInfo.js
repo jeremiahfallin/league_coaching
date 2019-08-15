@@ -117,7 +117,6 @@ const InfoBox = ({ title, type, name, value, handler }) => {
           id={name}
           name={name}
           placeholder={title}
-          required
           value={value}
           onChange={e => handler(e)}
         />

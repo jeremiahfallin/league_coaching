@@ -5,24 +5,12 @@ type SuccessMessage {
 }
 
 type Mutation {
-  createMatch(
-    players: [Player!]!
-    stats: [Stats!]!
-    teams: [Team!]!
-    duration: Int!
-    winner: Team!
-  ): Match!
-  createPlayer(
-    accountID: String!
-    summonerID: String!
-    role: String!
-    matches: [Match]!
-  ): Player!
-  createTeam(players: [Player!]!): Team!
+  createPlayer(data: PlayerCreateInput): Player!
+  createTeam(name: String!): Team!
 }
 
 type Query {
-  players(where: PlayerWhereInput): [Match]!
+  players(where: PlayerWhereInput): Player!
   team(where: TeamWhereInput): Team!
   teams(where: TeamWhereUniqueInput!): Team
 }

@@ -6,21 +6,16 @@ const getCustomMatch = require("./getCustomMatch");
 
 const server = createServer();
 
-var whitelist = ["http://localhost:7777"];
-
-var corsOptions = {
-  origin: function(origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  }
+const corsOptions = {
+  origin: "http://localhost:7777",
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
 };
 
-server.express.use(cors(corsOptions));
+const options = {
+  cors: corsOptions
+};
 
-// decode the JWT so we can get the user Id on each request
 server.express.get("/addmatch", async (req, res) => {
   try {
     data = await getCustomMatch(req.query.match);
@@ -30,14 +25,8 @@ server.express.get("/addmatch", async (req, res) => {
   res.send({ data });
 });
 
-server.start(
-  {
-    cors: {
-      // credentials: true,
-      origin: process.env.FRONTEND_URL
-    }
-  },
-  deets => {
-    console.log(`Server is now running on port http://localhost:${deets.port}`);
-  }
-);
+server.start(options, () => {
+  console.log(
+    `Server is now running on port http://localhost:${process.env.port}`
+  );
+});

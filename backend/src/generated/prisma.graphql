@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/jeremiahfallin-813d56/league_coaching/dev
-# timestamp: Sat Aug 10 2019 19:01:47 GMT-0400 (Eastern Daylight Time)
+# timestamp: Sun Aug 11 2019 15:23:03 GMT-0400 (Eastern Daylight Time)
 
 type AggregateMatch {
   count: Int!
@@ -567,8 +567,6 @@ type PageInfo {
 
 type Player implements Node {
   id: ID!
-  accountID: String!
-  summonerID: String!
   summonerName: String!
   team: Team
   role: String
@@ -589,8 +587,6 @@ type PlayerConnection {
 
 input PlayerCreateInput {
   id: ID
-  accountID: String!
-  summonerID: String!
   summonerName: String!
   role: String
   team: TeamCreateOneWithoutPlayersInput
@@ -614,8 +610,6 @@ input PlayerCreateOneInput {
 
 input PlayerCreateWithoutMatchesInput {
   id: ID
-  accountID: String!
-  summonerID: String!
   summonerName: String!
   role: String
   team: TeamCreateOneWithoutPlayersInput
@@ -623,8 +617,6 @@ input PlayerCreateWithoutMatchesInput {
 
 input PlayerCreateWithoutTeamInput {
   id: ID
-  accountID: String!
-  summonerID: String!
   summonerName: String!
   role: String
   matches: MatchCreateManyWithoutPlayersInput
@@ -642,10 +634,6 @@ type PlayerEdge {
 enum PlayerOrderByInput {
   id_ASC
   id_DESC
-  accountID_ASC
-  accountID_DESC
-  summonerID_ASC
-  summonerID_DESC
   summonerName_ASC
   summonerName_DESC
   role_ASC
@@ -658,8 +646,6 @@ enum PlayerOrderByInput {
 
 type PlayerPreviousValues {
   id: ID!
-  accountID: String!
-  summonerID: String!
   summonerName: String!
   role: String
   createdAt: DateTime!
@@ -715,86 +701,6 @@ input PlayerScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  accountID: String
-
-  """All values that are not equal to given value."""
-  accountID_not: String
-
-  """All values that are contained in given list."""
-  accountID_in: [String!]
-
-  """All values that are not contained in given list."""
-  accountID_not_in: [String!]
-
-  """All values less than the given value."""
-  accountID_lt: String
-
-  """All values less than or equal the given value."""
-  accountID_lte: String
-
-  """All values greater than the given value."""
-  accountID_gt: String
-
-  """All values greater than or equal the given value."""
-  accountID_gte: String
-
-  """All values containing the given string."""
-  accountID_contains: String
-
-  """All values not containing the given string."""
-  accountID_not_contains: String
-
-  """All values starting with the given string."""
-  accountID_starts_with: String
-
-  """All values not starting with the given string."""
-  accountID_not_starts_with: String
-
-  """All values ending with the given string."""
-  accountID_ends_with: String
-
-  """All values not ending with the given string."""
-  accountID_not_ends_with: String
-  summonerID: String
-
-  """All values that are not equal to given value."""
-  summonerID_not: String
-
-  """All values that are contained in given list."""
-  summonerID_in: [String!]
-
-  """All values that are not contained in given list."""
-  summonerID_not_in: [String!]
-
-  """All values less than the given value."""
-  summonerID_lt: String
-
-  """All values less than or equal the given value."""
-  summonerID_lte: String
-
-  """All values greater than the given value."""
-  summonerID_gt: String
-
-  """All values greater than or equal the given value."""
-  summonerID_gte: String
-
-  """All values containing the given string."""
-  summonerID_contains: String
-
-  """All values not containing the given string."""
-  summonerID_not_contains: String
-
-  """All values starting with the given string."""
-  summonerID_starts_with: String
-
-  """All values not starting with the given string."""
-  summonerID_not_starts_with: String
-
-  """All values ending with the given string."""
-  summonerID_ends_with: String
-
-  """All values not ending with the given string."""
-  summonerID_not_ends_with: String
   summonerName: String
 
   """All values that are not equal to given value."""
@@ -959,8 +865,6 @@ input PlayerSubscriptionWhereInput {
 }
 
 input PlayerUpdateDataInput {
-  accountID: String
-  summonerID: String
   summonerName: String
   role: String
   team: TeamUpdateOneWithoutPlayersInput
@@ -968,8 +872,6 @@ input PlayerUpdateDataInput {
 }
 
 input PlayerUpdateInput {
-  accountID: String
-  summonerID: String
   summonerName: String
   role: String
   team: TeamUpdateOneWithoutPlayersInput
@@ -977,15 +879,11 @@ input PlayerUpdateInput {
 }
 
 input PlayerUpdateManyDataInput {
-  accountID: String
-  summonerID: String
   summonerName: String
   role: String
 }
 
 input PlayerUpdateManyMutationInput {
-  accountID: String
-  summonerID: String
   summonerName: String
   role: String
 }
@@ -1027,16 +925,12 @@ input PlayerUpdateOneRequiredInput {
 }
 
 input PlayerUpdateWithoutMatchesDataInput {
-  accountID: String
-  summonerID: String
   summonerName: String
   role: String
   team: TeamUpdateOneWithoutPlayersInput
 }
 
 input PlayerUpdateWithoutTeamDataInput {
-  accountID: String
-  summonerID: String
   summonerName: String
   role: String
   matches: MatchUpdateManyWithoutPlayersInput
@@ -1118,86 +1012,6 @@ input PlayerWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  accountID: String
-
-  """All values that are not equal to given value."""
-  accountID_not: String
-
-  """All values that are contained in given list."""
-  accountID_in: [String!]
-
-  """All values that are not contained in given list."""
-  accountID_not_in: [String!]
-
-  """All values less than the given value."""
-  accountID_lt: String
-
-  """All values less than or equal the given value."""
-  accountID_lte: String
-
-  """All values greater than the given value."""
-  accountID_gt: String
-
-  """All values greater than or equal the given value."""
-  accountID_gte: String
-
-  """All values containing the given string."""
-  accountID_contains: String
-
-  """All values not containing the given string."""
-  accountID_not_contains: String
-
-  """All values starting with the given string."""
-  accountID_starts_with: String
-
-  """All values not starting with the given string."""
-  accountID_not_starts_with: String
-
-  """All values ending with the given string."""
-  accountID_ends_with: String
-
-  """All values not ending with the given string."""
-  accountID_not_ends_with: String
-  summonerID: String
-
-  """All values that are not equal to given value."""
-  summonerID_not: String
-
-  """All values that are contained in given list."""
-  summonerID_in: [String!]
-
-  """All values that are not contained in given list."""
-  summonerID_not_in: [String!]
-
-  """All values less than the given value."""
-  summonerID_lt: String
-
-  """All values less than or equal the given value."""
-  summonerID_lte: String
-
-  """All values greater than the given value."""
-  summonerID_gt: String
-
-  """All values greater than or equal the given value."""
-  summonerID_gte: String
-
-  """All values containing the given string."""
-  summonerID_contains: String
-
-  """All values not containing the given string."""
-  summonerID_not_contains: String
-
-  """All values starting with the given string."""
-  summonerID_starts_with: String
-
-  """All values not starting with the given string."""
-  summonerID_not_starts_with: String
-
-  """All values ending with the given string."""
-  summonerID_ends_with: String
-
-  """All values not ending with the given string."""
-  summonerID_not_ends_with: String
   summonerName: String
 
   """All values that are not equal to given value."""
@@ -1330,8 +1144,6 @@ input PlayerWhereInput {
 
 input PlayerWhereUniqueInput {
   id: ID
-  accountID: String
-  summonerID: String
 }
 
 type Query {
