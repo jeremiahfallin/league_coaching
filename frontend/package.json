@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/react-components": "^3.0.1",
+    "@apollo/react-hoc": "^3.0.1",
+    "@apollo/react-hooks": "^3.0.1",
     "apollo-boost": "^0.4.3",
     "apollo-client": "^2.6.3",
     "downshift": "^3.2.12",
